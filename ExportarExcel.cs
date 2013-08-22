@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Excel=Microsoft.Office.Interop.Excel;
 using System.Globalization;
+using System.Windows.Forms;
 
 namespace dGrid.clases
 {
-	/// <summary>
+    /// <summary>
     /// Exporta un resultado a Excel
     /// </summary>
-    public class ExportarExcel
+    public class ExportarExcel:IDisposable
     {
         private Excel.Application app;
         private Excel.Workbook workbook;
@@ -45,8 +45,13 @@ namespace dGrid.clases
                 sheet = workbook.Worksheets[index];
         }
         public void ExportarResultado(object DataSource,bool mostrarApp=false){
-            System.Windows.Forms.DataGridView dg1 = new System.Windows.Forms.DataGridView();
+            Visible = mostrarApp;
+            Form ff = new Form();
+            DataGridView dg1 = new DataGridView();
+            dg1.Name = "dg1";
+            ff.Controls.Add(dg1);
             dg1.DataSource = DataSource;
+            dg1.Refresh();
             //seteo headers
             for (int i = 0; i < dg1.Columns.Count; i++)
             {
@@ -62,7 +67,6 @@ namespace dGrid.clases
                     sheet.Range(getLetra(j,i+2)).Value = row.Cells[j].Value;
                 }
             }
-            Visible = mostrarApp;
         }
 
         public Boolean Visible
@@ -98,11 +102,18 @@ namespace dGrid.clases
         private string getLetra(int indice,int num){
             indice++;
             String []Letras={"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
-            int resto=indice%Letras.Length;
-            if (resto == 0)
                 return Letras[indice]+num.ToString();
-            else
-                return Letras[resto] + Letras[indice]+num.ToString();
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                workbook.Close();
+            }
+            catch{}
+            app.Visible = true;
+            app.Quit();
         }
     }
 }

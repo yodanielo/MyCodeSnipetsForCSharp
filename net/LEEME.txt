@@ -1,0 +1,12 @@
+utilidad para firmar dll de .net cuando pasa el siguiente error:
+
+Referenced assembly does not have a strong name
+
+1. para utilizarlo, copiar el bat a la ubicacion del dll
+
+2. ejecutar el bat: 
+			firmador.bat {nombre de archivo}
+
+* donde {nombre de archivo} no debe tener la extension, por ejm:
+
+			firmador.bat miarchivo
